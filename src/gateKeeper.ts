@@ -5,6 +5,7 @@ import type {
   RouteLocationRaw,
   Router,
 } from "vue-router";
+import { gatekeeperKey } from "./useGateKeeper";
 
 export interface Gate {
   name: string;
@@ -255,7 +256,7 @@ export const gatePlugin = {
       return gate.setGates(gates);
     };
 
-    app.provide("gateKeeper", runGates);
+    app.provide(gatekeeperKey, runGates);
 
     if (router) {
       // We pass a new, separate instance of the GateKeeper so that the routeData set later is independent
