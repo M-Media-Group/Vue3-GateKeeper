@@ -33,7 +33,7 @@ export class GateKeeper {
 
   gateInstances: any;
 
-  gateClasses = [] as any[];
+  gateClasses = [] as Record<string, any>;
 
   /**
    * Our "request" object - the route that the request is going to
@@ -137,7 +137,7 @@ export class GateKeeper {
     return this;
   }
 
-  private addOrGetGateClass(name, gateClass: any){
+  private addOrGetGateClass(name: string, gateClass: any){
     if (!this.gateClasses[name]) {
       this.gateClasses[name] = new gateClass();
     }
