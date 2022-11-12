@@ -53,7 +53,7 @@ export default (options: any) => {
 
 Now, whenever someone tries to access the route, the gate will be executed. If the user is authenticated, the gate will not return anything and the request will pass. If the user is not authenticated, the gate will return `false`.
 
-If you want to redirect to a specific page, you can override the `route` function in your middleware. If you return `false`, the navigation will be cancelled instead of redirected.
+If you want to redirect to a specific page, you can override the `route` function in your gate. If you return `false`, the navigation will be cancelled instead of redirected.
 
 ```typescript
   route(): false | RouteLocationRaw {
