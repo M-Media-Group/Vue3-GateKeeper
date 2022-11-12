@@ -228,7 +228,6 @@ export const setupGateRouterHandler = (
  */
 export const gatePlugin = {
   install(app: any, options: any, router?: Router) {
-    console.log("Giot new op", options);
     const gate = new GateKeeper([], options?.gateFolder);
 
     const runGates = async (gates: any) => {
