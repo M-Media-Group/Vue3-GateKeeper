@@ -62,7 +62,9 @@ GateKeeper will redirect the user to the login page and automatically add the `r
 We can also run GateKeeper in a component. In this case, we can inject `gateKeeper` and use its functions.
 
 ```typescript
-const GateKeeper = inject("gateKeeper");
+import { useGateKeeper } from "@m-media/vue3-gate-keeper";
+
+const GateKeeper = useGateKeeper();
 
 const isAuthenticated = async () => {
   const result = await GateKeeper(["isAuthenticated"]).handle();
