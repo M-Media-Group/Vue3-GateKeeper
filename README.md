@@ -36,19 +36,13 @@ In a route, define the `meta.gates` array.
 Define the gate in `src/gates/isAuthenticated.ts` by creating a class with the same name that extends `baseGate`. The `handle` function will return a `fail()` if the gate should not pass, otherwise it returns nothing.
 
 ```typescript
-class isAuthenticated extends baseGate {
+export default class extends baseGate {
   async handle() {
     if (!user.isAuthenticated) {
       return this.fail();
     }
   }
 }
-
-// Export the class so it can be used by GateKeeper - just copy/paste it in your gates (making sure to change the name of the class called in the const)
-const gate = new isAuthenticated();
-export default (options: any) => {
-  return gate.setOptions(options).handle();
-};
 ```
 
 Now, whenever someone tries to access the route, the gate will be executed. If the user is authenticated, the gate will not return anything and the request will pass. If the user is not authenticated, the gate will return `false`.
@@ -93,17 +87,20 @@ In your main file, add the gate plugin.
 
 ```javascript
 import { gateKeeper } from "vue3-gatekeeper";
+import isAuthenticated from "./gates/isAuthenticated";
 
 app.use(
   gateKeeper,
   {
-    gatesFolder: "/src/gates",
+    gateInstances: {
+      isAuthenticated: isAuthenticated,
+    },
   },
   router
 );
 ```
 
-The `gatesFolder` option is the path to the folder where you will store your gates. The default is `/src/gates`. The third parameter is an optional router instance. If you don't pass a router instance, route-level gates will not be enabled.
+The `gateInstances` option takes references to each of your gates. GateKeeper will automatically instantiate each gate as needed.
 
 ## More examples
 
@@ -118,7 +115,7 @@ We'll call our gate `userHasKittens` and extend the `baseGate` class. Finally, w
 ```javascript
 import baseGate from "./baseGate";
 
-class userHasKittens extends baseGate {
+export default class extends baseGate {
   // The form is what the user will see if the gate fails
   form = "AddKittens";
 
@@ -129,14 +126,6 @@ class userHasKittens extends baseGate {
     }
   }
 }
-
-// This is our gate instance. Defining only one is OK in this case - its not subject to change so a "singleton type" approach works in our favor.
-const gate = new userHasKittens();
-
-// Finally we export the gate so that it can be used by our handler. Our handler will pass it options, so we must make sure to set them before running the gate itself
-export default (options) => {
-  return gate.setOptions(options).handle();
-};
 ```
 
 The gate is defined and ready to be used.

@@ -11,7 +11,7 @@ abstract class baseGate {
   options = {} as GateOptions;
   form = false as string | false;
 
-  public setOptions(options: RouteLocationRaw | any) {
+  public setOptions(options = null as RouteLocationRaw | any) {
     this.options = options;
     return this;
   }

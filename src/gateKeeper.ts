@@ -24,19 +24,16 @@ export interface GateOptions {
  */
 export class GateKeeper {
   /**
-   *The location of our gates
-   *
-   * @memberof GateKeeper
-   */
-  gateFolder = "/src/gates";
-
-  /**
    * Our gates that will be handled during the request
    *
    * @type {RouteLocationNormalized}
    * @memberof GateKeeper
    */
   gates = [] as Gate[];
+
+  gateInstances: any;
+
+  gateClasses = [] as any[];
 
   /**
    * Our "request" object - the route that the request is going to
@@ -48,11 +45,13 @@ export class GateKeeper {
 
   constructor(
     gates: string | (string | Gate)[] | Gate,
-    gateFolder = null as string | null
+    gateInstances = null as any | null,
   ) {
     this.setGates(gates);
-    if (gateFolder) {
-      this.gateFolder = gateFolder;
+
+    if (gateInstances)
+    {
+      this.gateInstances = gateInstances;
     }
   }
 
@@ -138,6 +137,13 @@ export class GateKeeper {
     return this;
   }
 
+  private addOrGetGateClass(name, gateClass: any){
+    if (!this.gateClasses[name]) {
+      this.gateClasses[name] = new gateClass();
+    }
+    return this.gateClasses[name];
+  }
+
   /**
    * Handle a gate given its name. It will import the gate and then run its default export function
    *
@@ -145,9 +151,24 @@ export class GateKeeper {
    * @return {*}
    * @memberof GateKeeper
    */
-  handleGate(name: string, options: any) {
-    return import(`${this.gateFolder}/${name}.ts`).then((gate) => {
-      return gate.default(options);
+  private handleGate(name: string, options: any) {
+    // If the gate by the given name is in gateInstances, we can just use that
+    if (this.gateInstances && this.gateInstances[name]) {
+      this.addOrGetGateClass(name, this.gateInstances[name]);
+    }
+
+    // If the class already exists, just use that
+    if (this.gateClasses && this.gateClasses[name]) {
+      return this.gateClasses[name].setOptions(options).handle(options);
+    }
+
+    return import(`./gates/${name}.ts`).then((gate) => {
+      // Add the gate to gateInstances so we don't have to import it again
+      if (this.gateInstances && !this.gateInstances[name]) {
+        this.gateInstances[name] = gate.default;
+        this.addOrGetGateClass(name, this.gateInstances[name]);
+      }
+      return this.gateClasses[name].setOptions(options).handle(options);
     });
   }
 
@@ -228,7 +249,7 @@ export const setupGateRouterHandler = (
  */
 export const gatePlugin = {
   install(app: any, options: any, router?: Router) {
-    const gate = new GateKeeper([], options?.gateFolder);
+    const gate = new GateKeeper([], options?.gateInstances);
 
     const runGates = (gates: any) => {
       return gate.setGates(gates);
@@ -239,7 +260,7 @@ export const gatePlugin = {
     if (router) {
       // We pass a new, separate instance of the GateKeeper so that the routeData set later is independent
       setupGateRouterHandler(
-        new GateKeeper([], options?.gateFolder),
+        new GateKeeper([], options?.gateInstances),
         router
       );
     }

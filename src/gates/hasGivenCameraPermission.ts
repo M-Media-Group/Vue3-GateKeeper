@@ -1,6 +1,6 @@
 import baseGate from "./baseGate";
 
-class hasGivenCameraPermission extends baseGate {
+export default class extends baseGate {
 
   async handle() {
     if (
@@ -20,9 +20,3 @@ class hasGivenCameraPermission extends baseGate {
       });
   }
 }
-
-const gate = new hasGivenCameraPermission();
-
-export default (options: any) => {
-  return gate.setOptions(options).handle();
-};
