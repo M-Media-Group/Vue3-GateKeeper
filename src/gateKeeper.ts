@@ -230,8 +230,8 @@ export const gatePlugin = {
   install(app: any, options: any, router?: Router) {
     const gate = new GateKeeper([], options?.gateFolder);
 
-    const runGates = async (gates: any) => {
-      return await gate.setGates(gates);
+    const runGates = (gates: any) => {
+      return gate.setGates(gates);
     };
 
     app.provide("gateKeeper", runGates);
