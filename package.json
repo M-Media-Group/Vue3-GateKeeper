@@ -1,0 +1,22 @@
+{
+  "name": "@m-media/vue3-gate-keeper",
+  "version": "0.0.1",
+  "description": "Add gates to allow or deny requests in your Vue3 app",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "vue",
+    "vue3",
+    "vuejs",
+    "gates",
+    "gate"
+  ],
+  "devDependencies": {
+    "vue": "^3.2.41",
+    "vue-router": "^4.1.5"
+  },
+  "author": "M Media",
+  "license": "ISC"
+}
