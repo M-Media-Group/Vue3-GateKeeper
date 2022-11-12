@@ -18,7 +18,7 @@ Add gates to allow or deny requests in your Vue3 app and Vue Router!
       - [handle: fail() | undefined](#handle-fail--undefined)
       - [route: RouteLocationRaw | false](#route-routelocationraw--false)
       - [setOptions](#setoptions)
-  - [The gate handler](#the-gate-handler)
+  - [GateKeeper class](#gatekeeper-class)
 
 ## Quick usage
 
@@ -111,9 +111,9 @@ Imagine we want to prevent a user action based on if they have enough kittens (w
 
 First, we'd define a gate that checks if the user has enough kittens. If they do not, it should return `fail()`.
 
-We'll call our gate `userHasKittens` and extend the `baseGate` class. Finally, we'll put it in the `router/gates` folder.
+We'll call our gate `userHasKittens` and extend the `baseGate` class. Finally, we'll put it in the `src/gates` folder.
 
-We'll also define the `form` to be used in case the gate fails. In this case, we want the user to add kittens, so we will return the `AddKittens` form.
+<!-- We'll also define the `form` to be used in case the gate fails. In this case, we want the user to add kittens, so we will return the `AddKittens` form. -->
 
 ```javascript
 import baseGate from "./baseGate";
@@ -162,7 +162,7 @@ const result = await GateKeeper(["isAuthenticated", "userHasKittens"]).handle();
 
 ### Passing options to the gate
 
-You can pass options to the gate by adding a `meta.gateOptions` object to the route. The keys of the object will be the names of the options and the values will be the values of the options.
+You can pass options to a given gate by passing it as an object with the keys `name` and `options`, where the name is the gate you want to use and the options are your custom options.
 
 ```javascript
  {
@@ -181,7 +181,7 @@ You can pass options to the gate by adding a `meta.gateOptions` object to the ro
   },
 ```
 
-In our gate, we can access the passed options by using `this.options.gateOptions` anywhere in our gate class.
+In our gate class, we can access the passed options by using `this.options.gateOptions`.
 
 ```javascript
 this.options.gateOptions.kittens; // 5
@@ -203,7 +203,7 @@ const result = await GateKeeper([
 
 ## GateKeeper in detail
 
-The gate class defines the logic of your gate.
+The gate class defines the logic of your gate by extending baseGate.
 
 ### Properties
 
@@ -217,7 +217,7 @@ Note that gate that return `false` will not continue any navigation or logic - i
 
 #### handle: fail() | undefined
 
-The main gate handler. If the gate should NOT pass, then you should return `this.fail()`, otherwise, do not return anything.
+The main GateKeeper. If the gate should NOT pass, then you should return `this.fail()`, otherwise, do not return anything.
 
 #### route: RouteLocationRaw | false
 
@@ -231,11 +231,11 @@ If you would like to redirect elsewhere, you should override the `route` functio
 
 You should not override this function. It sets the options available to the gate. This function should be called before you call the `handle()` function.
 
-## The gate handler
+## GateKeeper class
 
-The gate handler is already set up for you for the Router and in the `ConfirmsGate` component.
+GateKeeper is already set up for you in the Router.
 
-The gate handler itself takes an array of gate names and runs through each of them. As a second parameter, you can pass in optional options. Calling the `handle()` function will execute all the gates passed to the handler.
+GateKeeper itself takes an array of gate names and runs through each of them. Calling the `handle()` function will execute all the gates passed to the handler.
 
 ```javascript
 const response = await new GateKeeper(["auth", "userHasKittens"]).handle();
