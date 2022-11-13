@@ -156,7 +156,7 @@ Our gate should extend the `baseGate` class.
 <!-- We'll also define the `form` to be used in case the gate fails. In this case, we want the user to add kittens, so we will return the `AddKittens` form. -->
 
 ```javascript
-import baseGate from "./baseGate";
+import { baseGate } from "@m-media/vue3-gate-keeper";
 
 export default class extends baseGate {
   // This is the core action of the gate. It determines if the gate passes or a form should be displayed
