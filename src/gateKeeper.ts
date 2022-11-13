@@ -186,7 +186,7 @@ export class GateKeeper {
    */
   async handle() {
     // If there are no gates to run, just continue
-    if (!this.gates) {
+    if (!this.gates || this.gates.length === 0) {
       return;
     }
 

@@ -11,6 +11,7 @@ Add gates to allow or deny requests in your Vue3 app and Vue Router!
   - [More examples](#more-examples)
     - [Using multiple gates](#using-multiple-gates)
     - [Passing options to the gate](#passing-options-to-the-gate)
+    - [Advanced usage in a component](#advanced-usage-in-a-component)
   - [GateKeeper in detail](#gatekeeper-in-detail)
     - [Properties](#properties)
       - [form: string | false](#form-string--false)
@@ -191,6 +192,10 @@ const result = await GateKeeper([
   },
 ]).handle();
 ```
+
+### Advanced usage in a component
+
+See the component here: https://github.com/M-Media-Group/Vue3-SPA-starter-template/blob/master/src/components/modals/ConfirmsGate.vue#L34 which demonstrates using GateKeeper to show a modal with a form if any gate fails, asking the user to confirm the action and/or fill in missing information, and then re-running the gates until all pass.
 
 ## GateKeeper in detail
 
