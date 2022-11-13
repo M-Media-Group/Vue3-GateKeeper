@@ -233,6 +233,8 @@ The gate class defines the logic of your gate by extending baseGate.
 
 #### form: string | false
 
+This parameter is optional.
+
 The form parameter is what is returned by the gate if it fails and the current request is not a route navigation. This is a great place to return the name of a form component that you want to display to the user, so that when calling GateKeeper in a component, you can display a form to the user to fill in missing information or confirm the action.
 
 You should either pass a string to a form name (filename) of a form in `/src/forms/`, or `false` if no form exists.
