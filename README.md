@@ -11,7 +11,8 @@ Add gates to allow or deny requests in your Vue3 app and Vue Router!
   - [More examples](#more-examples)
     - [Using multiple gates](#using-multiple-gates)
     - [Passing options to the gate](#passing-options-to-the-gate)
-    - [Advanced usage in a component](#advanced-usage-in-a-component)
+    - [Changing route behavior](#changing-route-behavior)
+    - [Advanced usage in a component example](#advanced-usage-in-a-component-example)
   - [GateKeeper in detail](#gatekeeper-in-detail)
     - [Properties](#properties)
       - [form: string | false](#form-string--false)
@@ -230,7 +231,32 @@ const result = await GateKeeper([
 ]).handle();
 ```
 
-### Advanced usage in a component
+### Changing route behavior
+
+By default, GateKeeper will redirect the user to the login page if they are not authenticated. If you want to change this behavior, you can override the `route` function in your gate.
+
+```javascript
+  route(): false | RouteLocationRaw {
+    return {
+      name: "login",
+    };
+  }
+```
+
+If you return `false`, the navigation will be cancelled instead of redirected.
+
+GateKeeper will automatically add the `redirect` query parameter to the route. This way, you can redirect the user back to the page they were trying to access originally once they have logged in. If you do not want to generate a redirect query parameter, you should pass the `setRedirectToIntended: false` in the route response.
+
+```javascript
+  route(): false | RouteLocationRaw {
+    return {
+      name: "login",
+      setRedirectToIntended: false,
+    };
+  }
+```
+
+### Advanced usage in a component example
 
 See the component here: https://github.com/M-Media-Group/Vue3-SPA-starter-template/blob/master/src/components/modals/ConfirmsGate.vue#L34 which demonstrates using GateKeeper to show a modal with a form if any gate fails, asking the user to confirm the action and/or fill in missing information, and then re-running the gates until all pass.
 
