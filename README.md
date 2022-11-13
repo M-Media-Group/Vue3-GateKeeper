@@ -247,9 +247,7 @@ This parameter is optional.
 
 The form parameter is what is returned by the gate if it fails and the current request is not a route navigation. This is a great place to return the name of a form component that you want to display to the user, so that when calling GateKeeper in a component, you can display a form to the user to fill in missing information or confirm the action.
 
-You should either pass a string to a form name (filename) of a form in `/src/forms/`, or `false` if no form exists.
-
-Note that gate that return `false` will not continue any navigation or logic - it is essentially a "cancel" event. Because of this, you should also define the `route` function so that users attempting to access a page directly do not see a blank page.
+Note that gates that return `false` will not continue any navigation or logic - it is essentially a "cancel" event. Because of this, you should also define the `route` function so that users attempting to access a page directly do not see a blank page.
 
 ### Functions
 
