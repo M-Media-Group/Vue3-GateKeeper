@@ -19,7 +19,7 @@ Add gates to allow or deny requests in your Vue3 app and Vue Router!
       - [handle: fail() | undefined](#handle-fail--undefined)
       - [route: RouteLocationRaw | false](#route-routelocationraw--false)
       - [setOptions](#setoptions)
-  - [GateKeeper class](#gatekeeper-class)
+  - [GateKeeper](#gatekeeper)
 
 ## Quick usage
 
@@ -34,7 +34,7 @@ In a route, define the `meta.gates` array.
   },
 ```
 
-Define the gate in `src/gates/isAuthenticated.ts` by creating a class that extends `baseGate`. The `handle` function will return a `fail()` if the gate should not pass, otherwise it returns nothing.
+Define the gate by creating a class that extends `baseGate`. The `handle` function will return a `fail()` if the gate should not pass, otherwise it returns nothing.
 
 ```typescript
 export default class extends baseGate {
@@ -135,11 +135,11 @@ app.use(
 
 ## More examples
 
-Imagine we want to prevent a user action based on if they have enough kittens (we'll consider 5 to be enough in this case).
+Imagine we want to prevent a user action based on if they have enough kittens.
 
 First, we'd define a gate that checks if the user has enough kittens. If they do not, it should return `fail()`.
 
-We'll call our gate `userHasKittens` and extend the `baseGate` class. Finally, we'll put it in the `src/gates` folder.
+Our gate should extend the `baseGate` class.
 
 <!-- We'll also define the `form` to be used in case the gate fails. In this case, we want the user to add kittens, so we will return the `AddKittens` form. -->
 
@@ -147,19 +147,16 @@ We'll call our gate `userHasKittens` and extend the `baseGate` class. Finally, w
 import baseGate from "./baseGate";
 
 export default class extends baseGate {
-  // The form is what the user will see if the gate fails
-  form = "AddKittens";
-
   // This is the core action of the gate. It determines if the gate passes or a form should be displayed
   async handle() {
-    if (user.kittens.length < 5) {
+    if (user.kittens.length < (this.options.gateOptions?.minimumKittens ?? 3)) {
       return this.fail();
     }
   }
 }
 ```
 
-The gate is defined and ready to be used.
+The gate is defined and ready to be used. You'll notice we're using `this.options.gateOptions.minimumKittens` to get the minimum number of kittens. We'll see how to pass this option a [little further down](#passing-options-to-the-gate).
 
 ### Using multiple gates
 
@@ -192,7 +189,7 @@ You can pass options to a given gate by passing it as an object with the keys `n
         {
             name: "userHasKittens", // This is the name of the gate to use
             options: {
-                kittens: 5,
+                minimumKittens: 5,
             },
         },
       ... // More gates, if you want
@@ -204,7 +201,7 @@ You can pass options to a given gate by passing it as an object with the keys `n
 In our gate class, we can access the passed options by using `this.options.gateOptions`.
 
 ```javascript
-this.options.gateOptions.kittens; // 5
+this.options.gateOptions.minimumKittens; // 5
 ```
 
 Of course, you can use the same syntax when calling GateKeeper yourself:
@@ -215,7 +212,7 @@ const result = await GateKeeper([
   {
     name: "userHasKittens", // This is the name of the gate to use
     options: {
-      kittens: 5,
+      minimumKittens: 5,
     },
   },
 ]).handle();
@@ -259,13 +256,17 @@ If you would like to redirect elsewhere, you should override the `route` functio
 
 You should not override this function. It sets the options available to the gate. This function should be called before you call the `handle()` function.
 
-## GateKeeper class
+## GateKeeper
 
 GateKeeper is already set up for you in the Router.
 
 GateKeeper itself takes an array of gate names and runs through each of them. Calling the `handle()` function will execute all the gates passed to the handler.
 
-```javascript
+```typescript
+import { useGateKeeper } from "@m-media/vue3-gate-keeper";
+
+const GateKeeper = useGateKeeper();
+
 const response = await new GateKeeper(["auth", "userHasKittens"]).handle();
 ```
 
