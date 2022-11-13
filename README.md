@@ -34,7 +34,7 @@ In a route, define the `meta.gates` array.
   },
 ```
 
-Define the gate by creating a class that extends `baseGate`. The `handle` function will return a `fail()` if the gate should not pass, otherwise it returns nothing.
+Define the gate by creating a class that extends `baseGate`. The `handle` function should return `this.fail()` if the gate should not pass, otherwise don't return anything.
 
 ```typescript
 export default class extends baseGate {
