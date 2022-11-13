@@ -158,12 +158,17 @@ export class GateKeeper {
       this.addOrGetGateClass(name, this.gateInstances[name]);
     }
 
-    // If the class already exists, just use that
-    if (this.gateClasses && this.gateClasses[name]) {
-      return this.gateClasses[name].setOptions(options).handle(options);
+    if (!this.gateClasses[name]) {
+      throw new Error(
+        `Gate ${name} does not exist. Please make sure it is imported and added to the gateInstances object.`
+      );
     }
 
-    return import(`./gates/${name}.ts`).then((gate) => {
+    return this.gateClasses[name].setOptions(options).handle(options);
+  }
+
+  private loadGateFromGateKeeper(name: string, options: any) {
+        return import(`./gates/${name}.ts`).then((gate) => {
       // Add the gate to gateInstances so we don't have to import it again
       if (this.gateInstances && !this.gateInstances[name]) {
         this.gateInstances[name] = gate.default;
