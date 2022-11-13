@@ -18,7 +18,6 @@ Add gates to allow or deny requests in your Vue3 app and Vue Router!
     - [Functions](#functions)
       - [handle: fail() | undefined](#handle-fail--undefined)
       - [route: RouteLocationRaw | false](#route-routelocationraw--false)
-      - [setOptions](#setoptions)
   - [GateKeeper](#gatekeeper)
 
 ## Quick usage
@@ -262,10 +261,6 @@ This function is optional.
 If not defined and the gate is intercepted by a route request, it will be redirected to the path `/confirm/:form()` where `:form()` is the name of the form to use. That route will automatically resolve and display the form, and then continue the navigation once the form is completed.
 
 If you would like to redirect elsewhere, you should override the `route` function in your gate and return a `RouteLocationRaw`.
-
-#### setOptions
-
-You should not override this function. It sets the options available to the gate. This function should be called before you call the `handle()` function.
 
 ## GateKeeper
 
