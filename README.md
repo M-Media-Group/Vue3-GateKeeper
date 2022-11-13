@@ -233,22 +233,20 @@ const result = await GateKeeper([
 
 ### Changing route behavior
 
-By default, GateKeeper will redirect the user to the login page if they are not authenticated. If you want to change this behavior, you can override the `route` function in your gate.
+By default, GateKeeper will cancel the navigation if the gate fails. If you want to change this behavior, you can override the `route` function in your gate.
 
 ```javascript
-  route(): false | RouteLocationRaw {
+  route() {
     return {
       name: "login",
     };
   }
 ```
 
-If you return `false`, the navigation will be cancelled instead of redirected.
-
-GateKeeper will automatically add the `redirect` query parameter to the route. This way, you can redirect the user back to the page they were trying to access originally once they have logged in. If you do not want to generate a redirect query parameter, you should pass the `setRedirectToIntended: false` in the route response.
+GateKeeper will automatically add the `redirect` query parameter to the route, which contains the `fullPath` of the intercepted path. This way, you can redirect the user back to the page they were trying to access originally once they have logged in. If you do not want to generate a redirect query parameter, you should pass the `setRedirectToIntended: false` in the route response.
 
 ```javascript
-  route(): false | RouteLocationRaw {
+  route() {
     return {
       name: "login",
       setRedirectToIntended: false,
