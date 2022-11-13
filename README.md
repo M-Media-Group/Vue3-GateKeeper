@@ -34,7 +34,7 @@ In a route, define the `meta.gates` array.
   },
 ```
 
-Define the gate in `src/gates/isAuthenticated.ts` by creating a class with the same name that extends `baseGate`. The `handle` function will return a `fail()` if the gate should not pass, otherwise it returns nothing.
+Define the gate in `src/gates/isAuthenticated.ts` by creating a class that extends `baseGate`. The `handle` function will return a `fail()` if the gate should not pass, otherwise it returns nothing.
 
 ```typescript
 export default class extends baseGate {
@@ -60,7 +60,7 @@ If you want to redirect to a specific page, you can override the `route` functio
 
 GateKeeper will redirect the user to the login page and automatically add the `redirect` query parameter. This way, you can redirect the user back to the page they were trying to access originally once they have logged in.
 
-We can also run GateKeeper in a component. In this case, we can inject `gateKeeper` and use its functions.
+We can also run GateKeeper in a component (for example, to prevent a form submission if the gates don't pass). In this case, we can inject `gateKeeper` and use its functions.
 
 ```typescript
 import { useGateKeeper } from "@m-media/vue3-gate-keeper";
@@ -89,6 +89,7 @@ npm install --save @m-media/vue3-gate-keeper
 In your main file, add the gate plugin.
 
 ```javascript
+// main.js
 import { gateKeeper } from "vue3-gatekeeper";
 import isAuthenticated from "./gates/isAuthenticated";
 
@@ -103,7 +104,33 @@ app.use(
 );
 ```
 
-The `gateInstances` option takes references to each of your gates. GateKeeper will automatically instantiate each gate as needed.
+The `gateInstances` option takes references to each of your gates. GateKeeper will automatically instantiate each gate class, only once, as needed. If you end up with a lot of gates you could create a `index` file that imports all of your gates and exports them as an object.
+
+```javascript
+// src/gates/index.ts
+import isAuthenticated from "./gates/isAuthenticated";
+import isAuthorized from "./gates/isAuthorized";
+
+export default {
+  isAuthenticated,
+  isAuthorized,
+};
+```
+
+Then, in your main file, you can import all the gates and pass them to GateKeeper.
+
+```javascript
+// src/main.ts
+import gates from "./gates";
+
+app.use(
+  gateKeeper,
+  {
+    gateInstances: gates,
+  },
+  router
+);
+```
 
 ## More examples
 
