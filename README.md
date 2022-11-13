@@ -34,7 +34,7 @@ In a route, define the `meta.gates` array.
   },
 ```
 
-Define the gate by creating a class that extends `baseGate`. The `handle` function should return `this.fail()` if the gate should not pass, otherwise don't return anything.
+Define the gate by creating a file with a class that extends `baseGate`. The `handle` function should return `this.fail()` if the gate should not pass, otherwise don't return anything.
 
 ```typescript
 export default class extends baseGate {
@@ -44,6 +44,19 @@ export default class extends baseGate {
     }
   }
 }
+```
+
+Finally, import the gate in your `main.ts` file and register it.
+
+```typescript
+import isAuthenticated from "./gates/isAuthenticated";
+
+app.use(GateKeeper, {
+  gates: {
+    isAuthenticated,
+  },
+  router,
+});
 ```
 
 Now, whenever someone tries to access the route, the gate will be executed. If the user is authenticated, the gate will not return anything and the request will pass. If the user is not authenticated, the gate will return `false`.
