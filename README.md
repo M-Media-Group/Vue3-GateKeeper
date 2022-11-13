@@ -70,8 +70,9 @@ const GateKeeper = useGateKeeper();
 const isAuthenticated = async () => {
   const result = await GateKeeper(["isAuthenticated"]).handle();
 
-  // GateKeeper returns a result only if a gate fails.
+  // GateKeeper returns a result only if a gate fails. You can see which gate failed by checking the result.gate property.
   if (result) {
+    console.log(`Gate ${result.gate} returned the following:`, result.data);
     return false;
   }
 
