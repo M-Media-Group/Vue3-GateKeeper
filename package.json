@@ -2,7 +2,7 @@
   "name": "@m-media/vue3-gate-keeper",
   "version": "0.1.5",
   "description": "Add gates to allow or deny requests in your Vue3 app",
-  "main": "src/index.js",
+  "main": "src/index.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
